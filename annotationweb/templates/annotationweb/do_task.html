@@ -46,7 +46,8 @@ setReturnURL('{{ return_url|safe }}');
 {{ task.number_of_annotated_images }} of {{ task.total_number_of_images}} videos/images have been labeled ({{ task.percentage_finished }}%)
 
 {% if image_sequence %}
-<h3>Sequence</h3>
+{% load get_sequence_name %}
+<h3>Sequence: {{ image_sequence.format|get_sequence_name }}</h3>
 <div id="progressbar"><div class="progress-label">Loading...</div></div>
 <div id="sliderText">Drag the slider to view the other frames in the sequence. Current frame <span id="currentFrame"></span></div>
 <div id="slider"></div>
