@@ -1,6 +1,7 @@
 {% extends 'annotationweb/one_column_layout.html' %}
 
 {% block content %}
+{% load get_sequence_name %}
 
 <h1>{{ task.name }}</h1>
 
@@ -38,7 +39,7 @@
 
     <div style="float: left; width: 25%; box-sizing: border-box; padding: 10px;">
         <img src="{% url 'show_image' image.id task.id %}" width="100%">
-        {{ image.format }}<br>
+        {{ image.format|get_patient_sequence_and_filename }}<br>
 
         {% if image.annotation.finished %}
         {% if image.annotation.rejected %}
