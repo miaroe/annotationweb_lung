@@ -1,0 +1,18 @@
+{% extends 'annotationweb/do_task.html' %}
+
+{% block task_javascript %}
+
+{# Add previously stored subsequence labels if they exist #}
+{% for label in subsequence_labels %}
+    //TODO: Add subsequence labels to slider with a function called from here?
+{% endfor %}
+
+{% if image_sequence %}
+loadSubsequenceClassificationTask({{ image_sequence.id }});
+{% endif %}
+
+{% endblock task_javascript %}
+
+{% block task_instructions %}
+   TODO Put task instructions here..
+{% endblock task_instructions %}

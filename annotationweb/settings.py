@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'cardiac_parasternal_long_axis',
     'cardiac_apical_long_axis',
     'video_annotation',
+    'subsequence_classification',
     'django_otp',
     'django_otp.plugins.otp_totp',
 ]

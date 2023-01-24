@@ -46,6 +46,7 @@ class Task(models.Model):
     CARDIAC_ALAX_SEGMENTATION = 'cardiac_alax_segmentation'
     SPLINE_SEGMENTATION = 'spline_segmentation'
     VIDEO_ANNOTATION = 'video_annotation'
+    SUBSEQUENCE_CLASSIFICATION = 'subsequence_classification'
     TASK_TYPES = (
         (CLASSIFICATION, 'Classification'),
         (BOUNDING_BOX, 'Bounding box'),
@@ -54,7 +55,8 @@ class Task(models.Model):
         (CARDIAC_PLAX_SEGMENTATION, 'Cardiac PLAX segmentation'),
         (CARDIAC_ALAX_SEGMENTATION, 'Cardiac ALAX segmentation'),
         (SPLINE_SEGMENTATION, 'Spline segmentation'),
-        (VIDEO_ANNOTATION, 'Video annotation')
+        (VIDEO_ANNOTATION, 'Video annotation'),
+        (SUBSEQUENCE_CLASSIFICATION, 'Subsequence classification')
     )
 
     name = models.CharField(max_length=200)

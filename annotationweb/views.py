@@ -603,6 +603,8 @@ def get_redirection(task):
         return 'spline_segmentation:segment_image'
     elif task.type == Task.VIDEO_ANNOTATION:
         return 'video_annotation:process_image'
+    elif task.type == Task.SUBSEQUENCE_CLASSIFICATION:
+        return 'subsequence_classification:label_subsequence'
 
 
 # @register.simple_tag
