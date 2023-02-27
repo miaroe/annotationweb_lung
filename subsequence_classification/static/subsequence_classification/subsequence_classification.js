@@ -22,8 +22,6 @@ function loadSubsequenceClassificationTask() {
             // Trigger pop-up with "Start/End segment"
             let dialogDiv = document.createElement('div');
             dialogDiv.className = 'smallFrame';
-            let selectedOption = showSelectStartEndButton('labelButton' + label_id);
-
 
             // If this segment was started with the same label
             //  --> only allow "End"
@@ -32,22 +30,6 @@ function loadSubsequenceClassificationTask() {
             //  --> start a new segment with the other label
             //  --> also end the previous segment on the previous frame
 
-
-            /*
-             From classification task
-            // Only trigger save if label has no children
-            let childrenFound = false;
-            for(let j = 0; j < g_labelButtons.length; j++) {
-                let child_label = g_labelButtons[j];
-                if(child_label.parent_id == g_currentLabel) {
-                    childrenFound = true;
-                } else if(child_label.parent_id != 0) {
-                }
-            }
-            if(!childrenFound)
-                save();
-
-             */
         });
     }
 
@@ -77,16 +59,6 @@ function sendDataForSave() {
         },
         dataType: "json" // Need this do get result back as JSON
     });
-}
-
-function showSelectStartEndButton(elementId){
-    let element = document.getElementById(elementId);
-
-
-    if (element.style.display === 'block'){
-        element.style.display = 'none';}
-    else{
-        element.style.display = 'block';}
 }
 
 function startButtonClick(e) {
@@ -206,57 +178,9 @@ function redrawSequence() {
     //redrawSliderMarks();
 }
 
-// TODO: Below function from video_annotation --> adjust!
-function redrawSliderMarks() {
-    /*var box, label;
-
-    // Draw current box
-    if(g_paint) {
-        g_context.beginPath();
-        g_context.lineWidth = 2;
-        box = createBox(g_BBx, g_BBy, g_BBx2, g_BBy2, g_currentLabel);
-        label = g_labelButtons[box.label];
-        g_context.strokeStyle = colorToHexString(label.red, label.green, label.blue);
-        g_context.rect(box.x, box.y, box.width, box.height);
-        g_context.stroke();
-    }
-
-    if(!(g_currentFrameNr in g_boxes))
-        return;
-
-    // Draw all stored boxes
-    for(let i = 0; i < g_labels[g_currentFrameNr].length; ++i) {
-        g_context.beginPath();
-        g_context.lineWidth = 2;
-        box = g_boxes[g_currentFrameNr][i];
-        label = g_labelButtons[box.label];
-        g_context.strokeStyle = colorToHexString(label.red, label.green, label.blue);
-        g_context.rect(box.x, box.y, box.width, box.height);
-        g_context.moveTo(box.x+box.width-g_cornerSize, box.y+box.height);
-        g_context.lineTo(box.x+box.width, box.y+box.height-g_cornerSize);
-        g_context.stroke();
-    }
-
-    for(let frame_nr = 0; frame_nr < g_labels[g_currentFrameNr].length; ++frame_nr) {
-        let frame_label = g_labels[g_currentFrameNr];
-        let label = g_labelButtons[box.label];
-        g_context.strokeStyle = colorToHexString(label.red, label.green, label.blue);
-        g_context.rect(box.x, box.y, box.width, box.height);
-        g_context.moveTo(box.x+box.width-g_cornerSize, box.y+box.height);
-        g_context.lineTo(box.x+box.width, box.y+box.height-g_cornerSize);
-        g_context.stroke();
-    }*/
-
-    for (let frame_nr = 95; frame_nr < 100; frame_nr++) {
-        setupSliderMark(frame_nr, '#995555');
-        setupSliderMark(frame_nr+50, '#108b2b');
-    }
-}
-
 function setLabel(frame_nr, label_id) {
     // Set label for frame
     g_labels[frame_nr] = label_id;
-    console.log('Frame', frame_nr, '- label id', label_id, '- label name', getLabelWithId(label_id).name);
 
     // Update slider marker for frame
     let label = getLabelWithId(label_id);
@@ -490,31 +414,6 @@ function loadSequence(
         g_sequence.push(image);
     }
 }
-
-/*function changeLabel(label_id) {
-    for(var i = 0; i < g_labelButtons.length; i++)  {
-        if(g_labelButtons[i].id == label_id) {
-            // Hide previous label's sublabels
-            var labelList = getLabelList(g_labelButtons[i]);
-            showLabelList(labelList);
-
-            g_currentLabel = label_id;
-            // Show new label's sublabels
-
-            var label = g_labelButtons[i];
-            // Set correct button to active
-            decorateLabelButtons(labelList);
-            //$('#labelButton' + label.id).addClass('activeLabel');
-            g_currentColor = {
-                red: label.red,
-                green: label.green,
-                blue: label.blue
-            };
-            console.log(i + ' is now active label');
-            break;
-        }
-    }
-}*/
 
 function addLabelButton(label_id, label_name, red, green, blue, parent_id) {
     var labelButton = {
