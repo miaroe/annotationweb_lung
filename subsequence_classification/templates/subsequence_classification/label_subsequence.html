@@ -30,10 +30,10 @@
 
 
     {# Add previously stored subsequence labels if they exist #}
-    {% for subsequence_label in subsequence_labels %}
-        {# TODO: Add label markers to slider #}
-        console.log(subsequence_label);
+    {% for label in subsequence_labels %}
+        addSubsequenceLabel({{ label.image.frame_nr }}, {{ label.label.id }});
     {% endfor %}
+    updateFrameLabelVariables();
 
 
     {% if return_url %}

@@ -264,6 +264,12 @@ function setLabel(frame_nr, label_id) {
     setupSliderMark(frame_nr, hexColor);
 }
 
+function addSubsequenceLabel(frame_nr, label_id) {
+    addKeyFrame(frame_nr);
+    setLabel(frame_nr, label_id);
+}
+
+
 function updateFrameLabelVariables() {
     // Update g_currentFrameLabelId/g_currentFrameLabel if current frame is labelled
     if (g_currentFrameNr in g_labels) {

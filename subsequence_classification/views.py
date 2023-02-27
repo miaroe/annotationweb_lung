@@ -28,10 +28,11 @@ def label_subsequence(request, task_id, image_id):
 
         # Get label, if image has been already labeled
         try:
-            processed = SubsequenceLabel.objects.get(image__image_annotation__task_id=task_id,
-                                                     image__image_annotation__image_id=image_id)
-            context['chosen_label'] = processed.label.id    # TODO: Can't use here since multiple labels?
-        except SubsequenceLabel.DoesNotExist:
+            sequence_annotations = ImageAnnotation.objects.filter(
+                task=task_id, image_id=image_id)
+            context['subsequence_labels'] = SubsequenceLabel.objects.filter(
+                image__image_annotation__in=sequence_annotations)
+        except KeyFrameAnnotation.DoesNotExist:
             print('No previous labels found..')
             pass
 
