@@ -56,14 +56,14 @@ def save_labels(request):
             with transaction.atomic():
                 annotations = common.task.save_annotation(request)
                 frame_labels = json.loads(request.POST['frame_labels'])
-                print(frame_labels)
 
                 for annotation in annotations:
                     labeled_image = SubsequenceLabel()
                     labeled_image.image = annotation
+                    label = Label.objects.get(id=frame_labels[str(annotation.frame_nr)])
                     labeled_image.label = label
                     labeled_image.task = annotation.image_annotation.task
-                    # labeled_image.save()
+                    labeled_image.save()
 
             response = {
                 'success': 'true',
