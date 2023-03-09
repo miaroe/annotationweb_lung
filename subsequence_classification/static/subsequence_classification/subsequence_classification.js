@@ -478,7 +478,7 @@ function incrementFrame() {
 
     updateFrameLabelVariables();
     redrawSequence();
-    window.setTimeout(incrementFrame, 100);
+    window.setTimeout(incrementFrame, 25);
 }
 
 function goToFrame(frameNr) {
