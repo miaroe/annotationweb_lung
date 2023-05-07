@@ -43,6 +43,7 @@ urlpatterns = [
     path('spline-segmentation/', include('spline_segmentation.urls')),
     path('spline-line-point/', include('spline_line_point.urls')),
     path('image-quality/', include('image_quality.urls')),
+    path('video-annotation/', include('video_annotation.urls'))
 ]
 
 # This is for making statics in a development environment

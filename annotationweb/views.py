@@ -450,6 +450,8 @@ def task_description(request, task_id):
         url = reverse('spline_line_point:segment_image', args=[task_id])
     elif task.type == task.IMGAE_QUALITY:
         url = reverse('image_quality:rank_image', args=[task_id])
+    elif task.type == task.VIDEO_ANNOTATION:
+        url = reverse('video_annotation:process_image', args=[task_id])
     else:
         raise NotImplementedError()
 
@@ -609,6 +611,8 @@ def get_redirection(task):
         return 'spline_line_point:segment_image'
     elif task.type == Task.IMAGE_QUALITY:
         return 'image_quality:rank_image'
+    elif task.type == Task.VIDEO_ANNOTATION:
+        return 'video_annotation:process_image'
     else:
         raise NotImplementedError()
 
