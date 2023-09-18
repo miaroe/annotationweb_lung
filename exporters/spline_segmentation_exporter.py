@@ -16,6 +16,7 @@ import io
 import codecs
 from PIL import Image
 import base64
+import warnings
 
 class SplineSegmentationExporterForm(forms.Form):
     path = forms.CharField(label='Storage path', max_length=1000)
@@ -247,6 +248,16 @@ class SplineSegmentationExporter(Exporter):
 
     @staticmethod
     def compute_scaling(image_size, spacing):
+        if len(spacing) > len(image_size):
+            warnings.warn(f'Image is {len(image_size)}D and spacing is {len(spacing)}D.'
+                          f'Dropping the extra axes in the spacing vector.')
+            for n in range(len(spacing) - len(image_size)):
+                spacing.pop(-1)
+        elif len(spacing) < len(image_size):
+            raise ValueError(f'Something wrong with the data:'
+                             f'image is {len(image_size)}D and spacing is {len(spacing)}D.')
+
+        assert len(image_size) == len(spacing), 'Image size and spacing are expected to have the same dimensions.'
         if len(spacing) == 2:
             aspect_ratio = image_size[0] / image_size[1]
             new_aspect_ratio = image_size[0] * spacing[0] / (image_size[1] * spacing[1])
