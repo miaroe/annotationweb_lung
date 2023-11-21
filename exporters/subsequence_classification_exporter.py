@@ -1,18 +1,22 @@
 """
 TODO: Write exporter for Subsequence classification task
 """
-from common.exporter import Exporter
-from common.utility import copy_image, create_folder
-from annotationweb.models import *
-from classification.models import ImageLabel
-from django import forms
 import os
 from os.path import join
+import csv
 from shutil import rmtree, copyfile
-from common.metaimage import MetaImage
+
 import PIL
-import numpy as np
 import h5py
+import numpy as np
+from django import forms
+
+from annotationweb.models import *
+from common.exporter import Exporter
+from common.label import get_all_labels
+from common.metaimage import MetaImage
+from common.utility import copy_image, create_folder
+from subsequence_classification.models import SubsequenceLabel
 
 
 class SubsequenceClassificationExporterForm(forms.Form):
@@ -36,8 +40,8 @@ class SubsequenceClassificationExporter(Exporter):
     A folder is created for each dataset with the actual images
     """
 
-    task_type = Task.CLASSIFICATION
-    name = 'Default image classification exporter'
+    task_type = Task.SUBSEQUENCE_CLASSIFICATION
+    name = 'Default subsequence classification exporter'
 
     def get_form(self, data=None):
         return SubsequenceClassificationExporterForm(self.task, data=data)
@@ -68,41 +72,71 @@ class SubsequenceClassificationExporter(Exporter):
             except:
                 return False, 'Path does not exist: ' + path
 
-
-        # Create label file
-        label_file = open(os.path.join(path, 'labels.txt'), 'w')
-        labels = Label.objects.filter(task=self.task)
-        labelDict = {}
-        counter = 0
-        for label in labels:
-            label_file.write(label.name + '\n')
-            labelDict[label.name] = counter
-            counter += 1
+        # Create label file (mapping label_id to label name)
+        label_file = open(os.path.join(path, 'labels.csv'), 'w')
+        label_dict = get_all_labels(task=self.task)
+        label_file.write(';'.join(('label_id', 'label_name', 'label_path')) + '\n')
+        for label in label_dict:
+            label_name_full = label['name']
+            label_name = label_name_full.split('-')[-1]
+            label_file.write(';'.join((str(label['id']), label_name, label_name_full)) + '\n')
         label_file.close()
 
         # Create file_list.txt file
-        file_list = open(os.path.join(path, 'file_list.txt'), 'w')
-        labeled_images = ProcessedImage.objects.filter(task=self.task, image__dataset__in=datasets, rejected=False)
-        for labeled_image in labeled_images:
-            name = labeled_image.image.filename
-            dataset_path = os.path.join(path, labeled_image.image.dataset.name)
-            try:
-                os.mkdir(dataset_path) # Make dataset path if doesn't exist
-            except:
-                pass
+        file_list = open(os.path.join(path, 'file_list.csv'), 'w')
+        file_list.write(';'.join(('file_path', 'label_id')) + '\n')
 
-            image_id = labeled_image.image.id
-            new_extension = form.cleaned_data['output_image_format']
-            new_filename = os.path.join(dataset_path, str(image_id) + '.' + new_extension)
-            copy_image(name, new_filename)
-
-            # Get image label
-            label = ImageLabel.objects.get(image=labeled_image)
-
-            file_list.write(new_filename + ' ' + str(labelDict[label.label.name]) + '\n')
+        labeled_sequences = ImageAnnotation.objects.filter(task=self.task, rejected=False)
+        for image_sequence in labeled_sequences:
+            keyframes = KeyFrameAnnotation.objects.filter(
+                image_annotation=image_sequence
+            )
+            for keyframe in keyframes:
+                # Get filename
+                frame_no = keyframe.frame_nr
+                filename_format = image_sequence.image.format
+                file_path = filename_format.replace('#', str(frame_no))
+                # Get image label
+                subsequence_label = keyframe.subsequencelabel
+                # Write filepath/label_id pair to the file
+                file_list.write(';'.join((file_path, str(subsequence_label.label.id))) + '\n')
 
         file_list.close()
 
         return True, path
 
 
+def read_csv_file(filename, has_header=False, include_header=False):
+    print(f"Reading {filename} as .csv")
+
+    with open(filename, newline='') as csvfile:
+        reader = csv.reader(
+            csvfile, delimiter=';', #quotechar='|',
+            skipinitialspace=True,
+        )
+
+        if has_header:
+            if include_header:
+                i = 0   # start with first (header) row
+            else:
+                i = 1   # start with first content row
+        else:
+            i = 0   # start with first row and first content row
+
+        data = []
+        for row in reader:
+            data.append([])
+            for c in row:
+                data[i].append(c)
+            i += 1
+
+        return data
+
+def write_dict_to_csv(filename, dictionary: dict):
+    print(f"Writing dict to .csv file {filename}")
+
+    with open(filename, 'w') as csvfile:
+        writer = csv.writer(csvfile, delimiter=';')
+        print(dictionary)
+        for k, v in dictionary.items():
+            writer.writerow([k, v])

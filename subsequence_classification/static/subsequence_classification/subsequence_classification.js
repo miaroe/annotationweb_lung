@@ -105,10 +105,12 @@ function endButtonClick(e) {
     while (frameIdx <= min(g_currentFrameNr, lastFrame)) {
         // console.log('Add label', g_currentLabel, 'to frame', frameIdx);
         addKeyFrame(frameIdx);
-        setLabel(frameIdx, g_currentLabel);
+        // setLabel(frameIdx, g_currentLabel);
         updateFrameLabelVariables();
         frameIdx++;
     }
+    // Add one mark for entire subsequence
+    sliderMarkSubsequence(startOfSubsequence, min(g_currentFrameNr, lastFrame), g_currentLabel);
 
     // Label the current frame as the last in the subsequence
     // frameIdx = g_currentFrameNr;
@@ -453,6 +455,26 @@ function setupSliderMark(frame, color) {
     $(newMarker).css('background-color', color);
     // Change from default: As % of slider length to clearly mark subsequences
     $(newMarker).css('width', ''+(100.0/g_sequenceLength)+'%');
+    $(newMarker).css('margin-left', $('.ui-slider-handle').css('margin-left'));
+    $(newMarker).css('height', '100%');
+    $(newMarker).css('z-index', '99');
+    $(newMarker).css('position', 'absolute');
+    $(newMarker).css('left', ''+(100.0*(frame-g_startFrame)/g_sequenceLength)+'%');
+
+    slider.appendChild(newMarker);
+    // console.log('Made marker');
+}
+
+function sliderMarkSubsequence(frame, frame_end, color) {
+    color = typeof color !== 'undefined' ? color : '#0077b3';
+
+    let slider = document.getElementById('slider')
+
+    let newMarker = document.createElement('span');
+    newMarker.setAttribute('id', 'sliderMarker' + frame);
+    $(newMarker).css('background-color', color);
+    // Change from default: As % of slider length to clearly mark subsequences
+    $(newMarker).css('width', ''+((frame_end-frame)/g_sequenceLength)+'%');
     $(newMarker).css('margin-left', $('.ui-slider-handle').css('margin-left'));
     $(newMarker).css('height', '100%');
     $(newMarker).css('z-index', '99');
