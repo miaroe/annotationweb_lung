@@ -434,6 +434,8 @@ def task_description(request, task_id):
 
     if task.type == task.CLASSIFICATION:
         url = reverse('classification:label_image', args=[task_id])
+    elif task.type == task.BLIND_CLASSIFICATION:
+        url = reverse('blind_classification:label_image', args=[task_id])
     elif task.type == task.BOUNDING_BOX:
         url = reverse('boundingbox:process_image', args=[task_id])
     elif task.type == task.LANDMARK:
@@ -446,6 +448,10 @@ def task_description(request, task_id):
         url = reverse('cardiac_parasternal_long_axis:segment_image', args=[task_id])
     elif task.type == task.CARDIAC_ALAX_SEGMENTATION:
         url = reverse('cardiac_apical_long_axis:segment_image', args=[task_id])
+    elif task.type == task.SPLINE_LINE_POINT:
+        url = reverse('spline_line_point:segment_image', args=[task_id])
+    elif task.type == task.IMGAE_QUALITY:
+        url = reverse('image_quality:rank_image', args=[task_id])
     else:
         raise NotImplementedError()
 
@@ -546,6 +552,15 @@ def task(request, task_id):
                 imageannotation__keyframeannotation__imagelabel__label__in=labels_selected,
                 subject__in=subjects_selected,
             )
+        elif task.type == Task.BLIND_CLASSIFICATION:
+            labels_selected = search_filters.get_value('label')
+            queryset = queryset.filter(
+                imageannotation__task=task,
+                imageannotation__finished=True,
+                imageannotation__user__in=users_selected,
+                imageannotation__keyframeannotation__imagelabelblind__label__in=labels_selected,
+                subject__in=subjects_selected,
+            )
         else:
             queryset = queryset.filter(
                 imageannotation__image_quality__in=image_quality,
@@ -589,6 +604,8 @@ def task(request, task_id):
 def get_redirection(task):
     if task.type == Task.CLASSIFICATION:
         return 'classification:label_image'
+    elif task.type == Task.BLIND_CLASSIFICATION:
+        return 'blind_classification:label_image'
     elif task.type == Task.BOUNDING_BOX:
         return 'boundingbox:process_image'
     elif task.type == Task.LANDMARK:
@@ -605,6 +622,12 @@ def get_redirection(task):
         return 'video_annotation:process_image'
     elif task.type == Task.SUBSEQUENCE_CLASSIFICATION:
         return 'subsequence_classification:label_subsequence'
+    elif task.type == Task.SPLINE_LINE_POINT:
+        return 'spline_line_point:segment_image'
+    elif task.type == Task.IMAGE_QUALITY:
+        return 'image_quality:rank_image'
+    else:
+        raise NotImplementedError()
 
 
 # @register.simple_tag

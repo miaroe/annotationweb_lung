@@ -233,7 +233,7 @@ function goToPreviousKeyFrame() {
     goToFrame(g_targetFrames[i]);
 }
 function loadSequence(image_sequence_id, start_frame, nrOfFrames, show_entire_sequence, user_frame_selection, annotate_single_frame, frames_to_annotate, images_to_load_before, images_to_load_after, auto_play) {
-    // If user cannot select frame, and there are no target frames, select last frame as target frame
+    // If user can select frame, and there are no target frames, select last frame as target frame
     if(user_frame_selection && annotate_single_frame && frames_to_annotate.length === 0) {
         // Select last frame as target frame
         frames_to_annotate.push(nrOfFrames-1);
@@ -557,4 +557,19 @@ function changeImage(url) {
     } else {
         window.location.href = url;
     }
+}
+
+function imageDataToCanvas(imagedata) {
+    var canvas = document.createElement('canvas');
+    canvas.width = imagedata.width;
+    canvas.height = imagedata.height;
+    var ctx = canvas.getContext('2d');
+    ctx.putImageData(imagedata, 0, 0);
+    return canvas;
+}
+
+function zoomAtMousePosition(mouseX, mouseY) {
+    // Have to convert imagedata to canvas for this to work
+    let background = g_context.getImageData(mouseX - 50, mouseY - 50, 100, 100);
+    g_context.drawImage(imageDataToCanvas(background), mouseX - 100, mouseY - 100, 200, 200);
 }

@@ -39,16 +39,20 @@ class Label(models.Model):
 
 class Task(models.Model):
     CLASSIFICATION = 'classification'
+    BLIND_CLASSIFICATION = 'blind_classification'
     BOUNDING_BOX = 'boundingbox'
     LANDMARK = 'landmark'
     CARDIAC_SEGMENTATION = 'cardiac_segmentation'
     CARDIAC_PLAX_SEGMENTATION = 'cardiac_plax_segmentation'
     CARDIAC_ALAX_SEGMENTATION = 'cardiac_alax_segmentation'
+    IMAGE_QUALITY = 'image_quality'
     SPLINE_SEGMENTATION = 'spline_segmentation'
     VIDEO_ANNOTATION = 'video_annotation'
     SUBSEQUENCE_CLASSIFICATION = 'subsequence_classification'
+    SPLINE_LINE_POINT = 'spline_line_point'
     TASK_TYPES = (
         (CLASSIFICATION, 'Classification'),
+        (BLIND_CLASSIFICATION, 'Blind classification'),
         (BOUNDING_BOX, 'Bounding box'),
         (LANDMARK, 'Landmark'),
         (CARDIAC_SEGMENTATION, 'Cardiac segmentation'),
@@ -56,7 +60,9 @@ class Task(models.Model):
         (CARDIAC_ALAX_SEGMENTATION, 'Cardiac ALAX segmentation'),
         (SPLINE_SEGMENTATION, 'Spline segmentation'),
         (VIDEO_ANNOTATION, 'Video annotation'),
-        (SUBSEQUENCE_CLASSIFICATION, 'Subsequence classification')
+        (SUBSEQUENCE_CLASSIFICATION, 'Subsequence classification'),
+        (SPLINE_LINE_POINT, 'Splines, lines & point segmentation'),
+        (IMAGE_QUALITY, 'Image Quality'),
     )
 
     name = models.CharField(max_length=200)
