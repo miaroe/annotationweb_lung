@@ -105,7 +105,7 @@ function endButtonClick(e) {
     while (frameIdx <= min(g_currentFrameNr, lastFrame)) {
         // console.log('Add label', g_currentLabel, 'to frame', frameIdx);
         addKeyFrame(frameIdx);
-        // setLabel(frameIdx, g_currentLabel);
+        setLabel(frameIdx, g_currentLabel);
         updateFrameLabelVariables();
         frameIdx++;
     }
