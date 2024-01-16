@@ -450,6 +450,8 @@ def task_description(request, task_id):
         url = reverse('cardiac_apical_long_axis:segment_image', args=[task_id])
     elif task.type == task.SPLINE_LINE_POINT:
         url = reverse('spline_line_point:segment_image', args=[task_id])
+    elif task.type == task.SUBSEQUENCE_CLASSIFICATION:
+        url = reverse('subsequence_classification:label_image', args=[task_id])
     elif task.type == task.IMGAE_QUALITY:
         url = reverse('image_quality:rank_image', args=[task_id])
     else:
@@ -559,6 +561,15 @@ def task(request, task_id):
                 imageannotation__finished=True,
                 imageannotation__user__in=users_selected,
                 imageannotation__keyframeannotation__imagelabelblind__label__in=labels_selected,
+                subject__in=subjects_selected,
+            )
+        elif task.type == Task.SUBSEQUENCE_CLASSIFICATION: #TODO: now all annotated keyframes are shown within one image sequence, make sure only one is shown
+            labels_selected = search_filters.get_value('label')
+            queryset = queryset.filter(
+                imageannotation__task=task,
+                imageannotation__finished=True,
+                imageannotation__user__in=users_selected,
+                imageannotation__keyframeannotation__subsequencelabel__label__in=labels_selected,
                 subject__in=subjects_selected,
             )
         else:

@@ -295,7 +295,7 @@ def save_annotation(request):
         rejected = request.POST['rejected'] == 'true'
         comments = request.POST['comments']
 
-        if task_id != Task.BLIND_CLASSIFICATION:
+        if task_id != Task.BLIND_CLASSIFICATION or task_id != Task.SUBSEQUENCE_CLASSIFICATION:
             # Image quality is required
             if 'quality' not in request.POST:
                 raise Exception('ERROR: You must select image quality.')
