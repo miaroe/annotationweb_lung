@@ -42,6 +42,7 @@ function loadSubsequenceClassificationTask() {
 }
 
 function sendDataForSave() {
+    console.log('Labels:', JSON.stringify(g_labels));
     return $.ajax({
         type: "POST",
         url: "/subsequence-classification/save/",
@@ -129,6 +130,9 @@ function endButtonClick(e) {
 
 function setupSubsequenceClassification() {
     console.log('Setting up subsequence classification....');
+    console.log('g_labelButtons', g_labelButtons);
+    console.log('g_labelButtons.length', g_labelButtons.length);
+    console.log('currentLabel', g_currentLabel);
 
     // Define event callbacks
     $('#clearButton').click(function () {
@@ -430,6 +434,25 @@ function loadSequence(
             g_progressbar.progressbar( "value", g_framesLoaded*100/totalToLoad);
         };
         g_sequence.push(image);
+    }
+}
+
+function addLabelButton(label_id, label_name, red, green, blue, parent_id) {
+    var labelButton = {
+        id: label_id,
+        name: label_name,
+        red: red,
+        green: green,
+        blue: blue,
+        parent_id: parent_id,
+    };
+    g_labelButtons.push(labelButton);
+
+    $("#labelButton" + label_id).css("background-color", colorToHexString(red, green, blue));
+
+    // TODO finish
+    if(parent_id != 0) {
+        $('#sublabel_' + parent_id).hide();
     }
 }
 
